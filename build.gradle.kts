@@ -1,7 +1,7 @@
 plugins {
     id("org.springframework.boot") version "2.5.2"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    id("org.asciidoctor.jvm.convert") version "3.1.0"
+    id("org.asciidoctor.jvm.convert") version "3.3.2"
     id("java")
 }
 
@@ -15,6 +15,14 @@ configurations {
         extendsFrom(configurations.annotationProcessor.get())
     }
 }
+
+lateinit var asciidoctorExt: Configuration
+val snippetsDir = file("build/generated-snippets")
+
+asciidoctorj {
+    asciidoctorExt = configurations.create("asciidoctorExt")
+}
+
 
 repositories {
     mavenCentral()
@@ -30,8 +38,31 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+
+    asciidoctorExt("org.springframework.restdocs:spring-restdocs-asciidoctor")
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.bootJar {
+    dependsOn(tasks.asciidoctor)
+    from("${tasks.asciidoctor.get().outputDir}") {
+        into("static/docs")
+    }
+}
+
+tasks.test {
+    outputs.dir(snippetsDir)
+}
+
+tasks.asciidoctor {
+    dependsOn(tasks.test)
+    val snippets = file("build/generated-snippets")
+    configurations("asciidoctorExt")
+    attributes["snippets"] = snippets
+    inputs.dir(snippets)
+    sources { include("**/index.adoc") }
+    baseDirFollowsSourceFile()
 }
