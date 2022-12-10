@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * fileName : MemberSignupRequest
@@ -14,12 +15,16 @@ import javax.validation.constraints.NotNull;
 public class MemberSignupRequest {
 
     @Email
+    @Size(max = 30)
     private String email;
 
     @NotNull
+    @Size(max = 10)
     private String name;
 
-    public Member toEntity(){
-        return new Member(email, name);
+    private MemberStatus status;
+
+    public Member toEntity() {
+        return new Member(email, name, status);
     }
 }

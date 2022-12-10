@@ -2,6 +2,7 @@ package com.rest.docs;
 
 import com.rest.docs.member.Member;
 import com.rest.docs.member.MemberRepository;
+import com.rest.docs.member.MemberStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -26,10 +27,10 @@ public class DataSetup implements ApplicationRunner {
 
         final List<Member> members = new ArrayList<>();
 
-        members.add(new Member("yun@bbb.com","yun"));
-        members.add(new Member("jin@bbb.com","jin"));
-        members.add(new Member("han@bbb.com","han"));
-        members.add(new Member("jo@bbb.com","jo"));
+        members.add(new Member("yun@bbb.com", "yun", MemberStatus.BAN));
+        members.add(new Member("jin@bbb.com", "jin", MemberStatus.NORMAL));
+        members.add(new Member("han@bbb.com", "han", MemberStatus.NORMAL));
+        members.add(new Member("jo@bbb.com", "jo", MemberStatus.LOCK));
 
         memberRepository.saveAll(members);
     }

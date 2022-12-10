@@ -3,6 +3,7 @@ package com.rest.docs.member;
 import lombok.Getter;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * fileName : MemberSignupRequest
@@ -13,5 +14,6 @@ import javax.validation.constraints.NotNull;
 public class MemberModificationRequest {
 
     @NotNull
+    @Size(max=10)
     private String name;
 }

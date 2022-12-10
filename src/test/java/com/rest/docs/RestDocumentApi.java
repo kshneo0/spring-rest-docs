@@ -1,14 +1,16 @@
 package com.rest.docs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.rest.docs.member.MemberStatus;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import java.util.EnumSet;
 
 /**
  * fileName : RestDocumentApi
@@ -19,10 +21,32 @@ import javax.validation.constraints.NotEmpty;
 @RequestMapping("/test")
 public class RestDocumentApi {
 
+    private final ObjectMapper mapper;
+
+    public RestDocumentApi(ObjectMapper objectMapper) {
+        this.mapper = objectMapper;
+    }
+
     @PostMapping("/sample")
     public void sample(@RequestBody @Valid SampleRequest dto){
 
     }
+
+    @GetMapping("/memberStatus")
+    public ArrayNode getMemberStatus() {
+        final ArrayNode arrayNode = mapper.createArrayNode();
+        final EnumSet<MemberStatus> types = EnumSet.allOf(MemberStatus.class);
+
+        for (final MemberStatus type : types) {
+            final ObjectNode node = mapper.createObjectNode();
+            node.put("MemberStatus", type.name());
+            node.put("description", type.getDescription());
+            arrayNode.add(node);
+        }
+
+        return arrayNode;
+    }
+
 
     public static class SampleRequest {
 
